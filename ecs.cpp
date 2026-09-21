@@ -205,8 +205,8 @@ std::vector<Entity>& ECS<max_components>::get_all_entities()
 }
 
 template <ComponentType max_components>
-template <typename T>
-std::vector<Entity>& ECS<max_components>::get_entities_with_component()
+template <typename... T>
+std::vector<Entity>& ECS<max_components>::get_entities_with_component_types();
 {
     assert(this->component_manager.component_type_registered<T>());
 

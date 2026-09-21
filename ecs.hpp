@@ -91,8 +91,8 @@ class ECS
         Entity create_entity();
         void destroy_entity (Entity entity);
         std::vector<Entity>& get_all_entities();
-        template <typename T>
-        std::vector<Entity>& get_entities_with_component();
+        template <typename... T>
+        std::vector<Entity>& get_entities_with_component_types();
 
 		// Component operations
         template <typename T>
