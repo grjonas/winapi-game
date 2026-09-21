@@ -8,3 +8,5 @@
 #include <optional>
 #include <cassert>
 #include <memory>
+
+#define UNREACHABLE assert(false && "This code should be unreachable")

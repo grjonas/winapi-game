@@ -1,6 +1,6 @@
 FILES   = \
 	main.cpp \
-	ecs.cpp
+	chess.cpp
 
 OPTIONS = \
 	-g \
