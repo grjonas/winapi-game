@@ -49,11 +49,10 @@ inline bool Piece::get_pawn_has_moved ()
 bool Board::move_piece_pawn (Index piece_index, Vector2D old_pos, Vector2D new_pos)
 {
     Piece piece = get_piece_from_index(piece_index);
-    Vector2D diff_vec;
 
     assert(piece.get_piece_kind() == PieceKind::PAWN);
 
-    diff_vec = new_pos - old_pos;
+    Vector2D diff_vec = new_pos - old_pos;
     if (diff_vec.x != 0
             || !(piece.get_pawn_has_moved() ? diff_vec.y == 1 : diff_vec.y == 2))
         return false;
@@ -65,13 +64,9 @@ bool Board::move_piece_pawn (Index piece_index, Vector2D old_pos, Vector2D new_p
         Piece other_piece = get_piece_from_index(other_piece_index);
 
         if (other_piece.get_player_kind() == piece.get_player_kind())
-        {
             return false;
-        }
         else
-        {
             remove_piece_from_index(other_piece_index);
-        }
     }
     piece.set_pos(new_pos);
     set_piece_from_index(piece_index, piece);
@@ -81,12 +76,107 @@ bool Board::move_piece_pawn (Index piece_index, Vector2D old_pos, Vector2D new_p
 
 bool Board::move_piece_rook   (Index piece_index, Vector2D old_pos, Vector2D new_pos)
 {
-    UNREACHABLE;
+    Piece piece = get_piece_from_index(piece_index);
+
+    assert(piece.get_piece_kind() == PieceKind::PAWN);
+
+    Vector2D diff_vec = new_pos - old_pos;
+    if (diff_vec.x != 0 && diff_vec.y != 0)
+        return false;
+    
+    auto opt_piece = get_piece_index_from_pos(new_pos);
+    if (opt_piece.has_value())
+    {
+        Index other_piece_index = opt_piece.value();
+        Piece other_piece = get_piece_from_index(other_piece_index);
+
+        bool is_iterating_over_x = diff_vec.x != 0;
+
+        std::int32_t start;
+        std::int32_t end;
+
+        if (is_iterating_over_x)
+        {
+            if (diff_vec.x < 0)
+            {
+                start = new_pos.x + 1;
+                end   = old_pos.x;
+            }
+            else if (diff_vec.vec > 0)
+            {
+                start = old_pos.x + 1;
+                end   = new_pos.x;
+            }
+            else
+                UNREACHABLE;
+
+            for (std::int32_t i = start; i < end; ++i)
+                if (get_piece_index_from_pos(Vector2D{ i, old_pos.y }) != nullptr)
+                    return false;
+        }
+        else
+        {
+            if (diff_vec.x < 0)
+            {
+                start = new_pos.x + 1;
+                end   = old_pos.x;
+            }
+            else if (diff_vec.vec > 0)
+            {
+                start = old_pos.x + 1;
+                end   = new_pos.x;
+            }
+            else
+                UNREACHABLE;
+
+            for (std::int32_t i = start; i < end; ++i)
+                if (get_piece_index_from_pos(Vector2D{ old_pos.x, i }) != nullptr)
+                    return false;
+        }
+
+        if (other_piece.get_player_kind() == piece.get_player_kind())
+            return false;
+        else
+            remove_piece_from_index(other_piece_index);
+    }
+
+    piece.set_pos(new_pos);
+    set_piece_from_index(piece_index, piece);
+
+    return true;
 }
 
 bool Board::move_piece_bishop (Index piece_index, Vector2D old_pos, Vector2D new_pos)
 {
-    UNREACHABLE;
+    Piece piece = get_piece_from_index(piece_index);
+
+    assert(piece.get_piece_kind() == PieceKind::PAWN);
+
+    Vector2D diff_vec = new_pos - old_pos;
+    if (diff_vec.x != 0 && diff_vec.y != 0)
+        return false;
+    
+    auto opt_piece = get_piece_index_from_pos(new_pos);
+    if (opt_piece.has_value())
+    {
+        Index other_piece_index = opt_piece.value();
+        Piece other_piece = get_piece_from_index(other_piece_index);
+
+        bool is_iterating_over_x = diff_vec.x != 0;
+
+        std::int32_t start;
+        std::int32_t end;
+
+        if (other_piece.get_player_kind() == piece.get_player_kind())
+            return false;
+        else
+            remove_piece_from_index(other_piece_index);
+    }
+
+    piece.set_pos(new_pos);
+    set_piece_from_index(piece_index, piece);
+
+    return true;
 }
 
 bool Board::move_piece_knight (Index piece_index, Vector2D old_pos, Vector2D new_pos)
