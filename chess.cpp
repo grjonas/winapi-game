@@ -63,6 +63,14 @@ bool Board::move_piece_pawn (Index piece_index, Vector2D old_pos, Vector2D new_p
         Index other_piece_index = opt_piece.value();
         Piece other_piece = get_piece_from_index(other_piece_index);
 
+        // TODO: This is a bit bad, I just copied the 'range check'
+        // from other code, fix later.
+        Vector2D change { sign(diff_vec.x), sign(diff_vec.y) };
+
+        for (Vector2D curr_pos = old_pos; curr_pos != old_pos; curr_pos = curr_pos + change)
+            if (get_piece_index_from_pos(curr_pos) != std::nullopt)
+                return false;
+
         if (other_piece.get_player_kind() == piece.get_player_kind())
             return false;
         else
@@ -90,46 +98,6 @@ bool Board::move_piece_rook   (Index piece_index, Vector2D old_pos, Vector2D new
     {
         Index other_piece_index = opt_piece.value();
         Piece other_piece = get_piece_from_index(other_piece_index);
-
-        // bool is_iterating_over_x = diff_vec.x != 0;
-        //
-        // std::int32_t start;
-        // std::int32_t end;
-        //
-        // if (is_iterating_over_x)
-        // {
-        //     if (diff_vec.x < 0)
-        //     {
-        //         start = new_pos.x + 1;
-        //         end   = old_pos.x;
-        //     }
-        //     else
-        //     {
-        //         start = old_pos.x + 1;
-        //         end   = new_pos.x;
-        //     }
-        //
-        //     for (std::int32_t i = start; i < end; ++i)
-        //         if (get_piece_index_from_pos(Vector2D{ i, old_pos.y }) != std::nullopt)
-        //             return false;
-        // }
-        // else
-        // {
-        //     if (diff_vec.y < 0)
-        //     {
-        //         start = new_pos.y + 1;
-        //         end   = old_pos.y;
-        //     }
-        //     else
-        //     {
-        //         start = old_pos.y + 1;
-        //         end   = new_pos.y;
-        //     }
-        //
-        //     for (std::int32_t i = start; i < end; ++i)
-        //         if (get_piece_index_from_pos(Vector2D{ old_pos.x, i }) != std::nullopt)
-        //             return false;
-        // }
 
         Vector2D change { sign(diff_vec.x), sign(diff_vec.y) };
 
